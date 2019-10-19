@@ -1,6 +1,6 @@
 const axios = require('axios');
 const qs = require('querystring');
-const { config } = require('../config');
+const { config } = require('../../config');
 
 class SpotifyService {
     constructor() {

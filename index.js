@@ -3,8 +3,11 @@ const helmet = require('helmet');
 const debug = require('debug')('app:server');
 
 const app = express();
+
 const { config } = require('./config');
-const { authApi, categorieApi } = require('./routes');
+const authApi = require('./routes/auth');
+const categoriesApi = require('./routes/categories');
+const artistsApi = require('./routes/artists');
 
 const {
     logErrors,
@@ -19,7 +22,8 @@ app.use(helmet());
 
 // Routes
 authApi(app);
-categorieApi(app);
+categoriesApi(app);
+artistsApi(app);
 
 // Catch 404
 app.use(notFoundHandler);
