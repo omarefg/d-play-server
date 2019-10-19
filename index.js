@@ -4,13 +4,13 @@ const debug = require('debug')('app:server');
 
 const app = express();
 const { config } = require('./config');
-const { authApi } = require('./routes');
+const { authApi, categorieApi } = require('./routes');
 
 const {
-  logErrors,
-  errorHandler,
-  wrapError,
-  notFoundHandler,
+    logErrors,
+    errorHandler,
+    wrapError,
+    notFoundHandler,
 } = require('./utils/middlewares/error-handlers');
 
 // Body Parser
@@ -19,6 +19,7 @@ app.use(helmet());
 
 // Routes
 authApi(app);
+categorieApi(app);
 
 // Catch 404
 app.use(notFoundHandler);
@@ -29,5 +30,5 @@ app.use(wrapError);
 app.use(errorHandler);
 
 app.listen(config.port, () => {
-  debug(`Listening http://localhost:${config.port}`);
+    debug(`Listening http://localhost:${config.port}`);
 });

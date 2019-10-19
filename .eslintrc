@@ -7,5 +7,9 @@
     "extends": ["airbnb"],
     "parserOptions": {
         "ecmaVersion": 2018
+    },
+    "rules": {
+        "indent": [2, 4],
+        "no-underscore-dangle": [2, { "allowAfterThis": true }]
     }
 }
