@@ -1,46 +1,63 @@
-const axios = require('axios');
-const SpotifyService = require('./SpotifyService');
-const { config } = require('../config');
+const SpotifyCategorieLib = require('../lib/spotify/SpotifyCategorieLib');
+const { tokenExpiredHandler } = require('../utils/spotify/error-handlers');
 
 class CategorieService {
     constructor() {
-        this.spotifyService = new SpotifyService();
-        this.categories = null;
+        this.spotifyCategorieLib = new SpotifyCategorieLib();
     }
 
-    async getSpotifyCategories() {
-        const accessToken = await this.spotifyService.getAccessToken();
-        const axiosConfig = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        };
+    async getAllCategories({ limit, offset, country }) {
+        const data = { limit, offset, country };
+        let categories = null;
         try {
-            const { data } = await axios.get(
-                `${config.spotifyApi}/browse/categories`,
-                axiosConfig,
-            );
-            return data;
+            categories = await this.spotifyCategorieLib.getAllCategories(data);
         } catch (error) {
-            throw new Error(error);
-        }
-    }
-
-    async getAllCategories() {
-        if (!this.categories) {
-            try {
-                this.categories = await this.getSpotifyCategories();
-            } catch (error) {
-                const { status } = error;
-                if (status === 401) {
-                    this.spotifyService.restartAccessToken();
-                    this.categories = await this.getSpotifyCategories();
-                } else {
-                    throw new Error(error);
-                }
+            const { status } = error;
+            if (status === 401) {
+                const cb = () => this.spotifyCategorieLib.getAllCategories(data);
+                categories = await tokenExpiredHandler(cb);
+            } else {
+                throw new Error(error);
             }
         }
-        return this.categories;
+        return categories;
+    }
+
+    async getCategorieById(id) {
+        let categorie = null;
+        try {
+            categorie = await this.spotifyCategorieLib.getCategorieById(id);
+        } catch (error) {
+            const { status } = error;
+            if (status === 401) {
+                const cb = () => this.spotifyCategorieLib.getCategorieById(id);
+                categorie = await tokenExpiredHandler(cb);
+            } else {
+                throw new Error(error);
+            }
+        }
+        return categorie;
+    }
+
+    async getACategoryPlaylists({
+        limit, offset, country, id,
+    }) {
+        const data = {
+            limit, offset, country, id,
+        };
+        let playlists = null;
+        try {
+            playlists = await this.spotifyCategorieLib.getACategoryPlaylists(data);
+        } catch (error) {
+            const { status } = error;
+            if (status === 401) {
+                const cb = () => this.spotifyCategorieLib.getACategoryPlaylists(data);
+                playlists = await tokenExpiredHandler(cb);
+            } else {
+                throw new Error(error);
+            }
+        }
+        return playlists;
     }
 }
 

@@ -1,27 +1,27 @@
 const express = require('express');
 const passport = require('passport');
-const CategorieService = require('../services/CategorieService');
+const AlbumService = require('../services/AlbumService');
 
 // JWT Strategy
 require('../utils/auth/strategies/jwt');
 
 
-function categoriesApi(app) {
+function artistsApi(app) {
     const router = express.Router();
-    app.use('/api/categories', router);
+    app.use('/api/albums', router);
 
-    const categorieService = new CategorieService();
+    const albumService = new AlbumService();
 
     router.get(
         '/',
         passport.authenticate('jwt', { session: false }),
         async (req, res, next) => {
-            const { limit, offset, country } = req.query;
+            const { ids } = req.query;
             try {
-                const data = await categorieService.getAllCategories({ limit, offset, country });
+                const data = await albumService.getMultipleAlbums(ids);
                 res.status(200).json({
                     data,
-                    message: 'categories',
+                    message: 'albums',
                 });
             } catch (error) {
                 next(error);
@@ -35,10 +35,10 @@ function categoriesApi(app) {
         async (req, res, next) => {
             const { id } = req.params;
             try {
-                const data = await categorieService.getCategorieById(id);
+                const data = await albumService.getAlbumById(id);
                 res.status(200).json({
                     data,
-                    message: 'categorie',
+                    message: 'album',
                 });
             } catch (error) {
                 next(error);
@@ -47,18 +47,16 @@ function categoriesApi(app) {
     );
 
     router.get(
-        '/:id/playlists',
+        '/:id/tracks',
         passport.authenticate('jwt', { session: false }),
         async (req, res, next) => {
             const { id } = req.params;
-            const { limit, offset, country } = req.query;
+            const { limit, offset } = req.query;
             try {
-                const data = await categorieService.getACategoryPlaylists({
-                    limit, offset, country, id,
-                });
+                const data = await albumService.getAlbumTracks({ limit, offset, id });
                 res.status(200).json({
                     data,
-                    message: 'categorie playlists',
+                    message: 'album tracks',
                 });
             } catch (error) {
                 next(error);
@@ -67,4 +65,4 @@ function categoriesApi(app) {
     );
 }
 
-module.exports = categoriesApi;
+module.exports = artistsApi;
