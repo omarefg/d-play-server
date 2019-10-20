@@ -1,10 +1,10 @@
-const SpotifyAuth = require('../../services/spotify/SpotifyAuth');
+const SpotifyAuthLib = require('../../lib/spotify/SpotifyAuthLib');
 
-const spotifyAuth = new SpotifyAuth();
+const spotifyAuthLib = new SpotifyAuthLib();
 
 
 async function tokenExpiredHandler(cb) {
-    spotifyAuth.restartAccessToken();
+    spotifyAuthLib.restartAccessToken();
     const response = await cb();
     return response;
 }

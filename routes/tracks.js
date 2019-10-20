@@ -1,31 +1,27 @@
 const express = require('express');
 const passport = require('passport');
-const RecommendationService = require('../services/RecommendationService');
+const TrackService = require('../services/TrackService');
 
 // JWT Strategy
 require('../utils/auth/strategies/jwt');
 
 
-function recommendationsApi(app) {
+function tracksApi(app) {
     const router = express.Router();
-    app.use('/api/recommendations', router);
+    app.use('/api/tracks', router);
 
-    const recommendationService = new RecommendationService();
+    const trackService = new TrackService();
 
     router.get(
         '/',
         passport.authenticate('jwt', { session: false }),
         async (req, res, next) => {
-            const {
-                artists, genres, tracks, limit,
-            } = req.query;
+            const { ids } = req.query;
             try {
-                const data = await recommendationService.getRecommendations({
-                    artists, genres, tracks, limit,
-                });
+                const data = await trackService.getMultipleTracks(ids);
                 res.status(200).json({
                     data,
-                    message: 'recommendations',
+                    message: 'tracks',
                 });
             } catch (error) {
                 next(error);
@@ -34,14 +30,15 @@ function recommendationsApi(app) {
     );
 
     router.get(
-        '/available-genre-seeds',
+        '/:id',
         passport.authenticate('jwt', { session: false }),
         async (req, res, next) => {
+            const { id } = req.params;
             try {
-                const data = await recommendationService.getRecommendationGenres();
+                const data = await trackService.getTrackById(id);
                 res.status(200).json({
                     data,
-                    message: 'recommendation genres',
+                    message: 'track',
                 });
             } catch (error) {
                 next(error);
@@ -50,15 +47,15 @@ function recommendationsApi(app) {
     );
 
     router.get(
-        '/new-releases',
+        '/audio-features',
         passport.authenticate('jwt', { session: false }),
         async (req, res, next) => {
-            const { limit, offset, country } = req.query;
+            const { ids } = req.query;
             try {
-                const data = await recommendationService.getNewReleases({ limit, offset, country });
+                const data = await trackService.getMultipleTracksFeatures(ids);
                 res.status(200).json({
                     data,
-                    message: 'new releases',
+                    message: 'track features',
                 });
             } catch (error) {
                 next(error);
@@ -67,17 +64,32 @@ function recommendationsApi(app) {
     );
 
     router.get(
-        '/featured-playlists',
+        '/audio-features/:id',
         passport.authenticate('jwt', { session: false }),
         async (req, res, next) => {
-            const { limit, offset, country } = req.query;
+            const { id } = req.params;
             try {
-                const data = await recommendationService.getFeaturedPlaylists({
-                    limit, offset, country,
-                });
+                const data = await trackService.getTrackFeatures(id);
                 res.status(200).json({
                     data,
-                    message: 'featured playlists',
+                    message: 'track features',
+                });
+            } catch (error) {
+                next(error);
+            }
+        },
+    );
+
+    router.get(
+        '/audio-analysis/:id',
+        passport.authenticate('jwt', { session: false }),
+        async (req, res, next) => {
+            const { id } = req.params;
+            try {
+                const data = await trackService.getTrackAnalysis(id);
+                res.status(200).json({
+                    data,
+                    message: 'track analysis',
                 });
             } catch (error) {
                 next(error);
@@ -86,4 +98,4 @@ function recommendationsApi(app) {
     );
 }
 
-module.exports = recommendationsApi;
+module.exports = tracksApi;

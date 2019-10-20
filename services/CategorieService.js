@@ -1,22 +1,20 @@
-const SpotifyAuth = require('./spotify/SpotifyAuth');
-const SpotifyCategorie = require('./spotify/SpotifyCategorie');
+const SpotifyCategorieLib = require('../lib/spotify/SpotifyCategorieLib');
 const { tokenExpiredHandler } = require('../utils/spotify/error-handlers');
 
 class CategorieService {
     constructor() {
-        this.spotifyAuth = new SpotifyAuth();
-        this.spotifyCategorie = new SpotifyCategorie();
+        this.spotifyCategorieLib = new SpotifyCategorieLib();
     }
 
     async getAllCategories({ limit, offset, country }) {
         const data = { limit, offset, country };
         let categories = null;
         try {
-            categories = await this.spotifyCategorie.getAllCategories(data);
+            categories = await this.spotifyCategorieLib.getAllCategories(data);
         } catch (error) {
             const { status } = error;
             if (status === 401) {
-                const cb = () => this.spotifyCategorie.getAllCategories(data);
+                const cb = () => this.spotifyCategorieLib.getAllCategories(data);
                 categories = await tokenExpiredHandler(cb);
             } else {
                 throw new Error(error);
@@ -28,11 +26,11 @@ class CategorieService {
     async getCategorieById(id) {
         let categorie = null;
         try {
-            categorie = await this.spotifyCategorie.getCategorieById(id);
+            categorie = await this.spotifyCategorieLib.getCategorieById(id);
         } catch (error) {
             const { status } = error;
             if (status === 401) {
-                const cb = () => this.spotifyCategorie.getCategorieById(id);
+                const cb = () => this.spotifyCategorieLib.getCategorieById(id);
                 categorie = await tokenExpiredHandler(cb);
             } else {
                 throw new Error(error);
@@ -49,11 +47,11 @@ class CategorieService {
         };
         let playlists = null;
         try {
-            playlists = await this.spotifyCategorie.getACategoryPlaylists(data);
+            playlists = await this.spotifyCategorieLib.getACategoryPlaylists(data);
         } catch (error) {
             const { status } = error;
             if (status === 401) {
-                const cb = () => this.spotifyCategorie.getACategoryPlaylists(data);
+                const cb = () => this.spotifyCategorieLib.getACategoryPlaylists(data);
                 playlists = await tokenExpiredHandler(cb);
             } else {
                 throw new Error(error);

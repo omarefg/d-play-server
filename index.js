@@ -8,6 +8,7 @@ const { config } = require('./config');
 const authApi = require('./routes/auth');
 const categoriesApi = require('./routes/categories');
 const artistsApi = require('./routes/artists');
+const tracksApi = require('./routes/tracks');
 
 const {
     logErrors,
@@ -24,6 +25,7 @@ app.use(helmet());
 authApi(app);
 categoriesApi(app);
 artistsApi(app);
+tracksApi(app);
 
 // Catch 404
 app.use(notFoundHandler);
