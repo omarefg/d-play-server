@@ -1,19 +1,19 @@
-const SpotifyArtistLib = require('../lib/spotify/SpotifyArtistLib');
+const SpotifyAlbumLib = require('../lib/spotify/SpotifyAlbumLib');
 const { tokenExpiredHandler } = require('../utils/spotify/error-handlers');
 
 class AlbumService {
     constructor() {
-        this.spotifyArtistLib = new SpotifyArtistLib();
+        this.spotifyAlbumLib = new SpotifyAlbumLib();
     }
 
     async getMultipleAlbums(ids) {
         let albums = null;
         try {
-            albums = await this.spotifyArtistLib.getMultipleAlbums(ids);
+            albums = await this.spotifyAlbumLib.getMultipleAlbums(ids);
         } catch (error) {
             const { status } = error;
             if (status === 401) {
-                const cb = () => this.spotifyArtistLib.getMultipleAlbums(ids);
+                const cb = () => this.spotifyAlbumLib.getMultipleAlbums(ids);
                 albums = await tokenExpiredHandler(cb);
             } else {
                 throw new Error(error);
@@ -25,11 +25,11 @@ class AlbumService {
     async getAlbumById(id) {
         let album = null;
         try {
-            album = await this.spotifyArtistLib.getAlbumById(id);
+            album = await this.spotifyAlbumLib.getAlbumById(id);
         } catch (error) {
             const { status } = error;
             if (status === 401) {
-                const cb = () => this.spotifyArtistLib.getAlbumById(id);
+                const cb = () => this.spotifyAlbumLib.getAlbumById(id);
                 album = await tokenExpiredHandler(cb);
             } else {
                 throw new Error(error);
@@ -41,11 +41,11 @@ class AlbumService {
     async getAlbumTracks({ limit, offset, id }) {
         let album = null;
         try {
-            album = await this.spotifyArtistLib.getAlbumTracks({ limit, offset, id });
+            album = await this.spotifyAlbumLib.getAlbumTracks({ limit, offset, id });
         } catch (error) {
             const { status } = error;
             if (status === 401) {
-                const cb = () => this.spotifyArtistLib.getAlbumTracks({ limit, offset, id });
+                const cb = () => this.spotifyAlbumLib.getAlbumTracks({ limit, offset, id });
                 album = await tokenExpiredHandler(cb);
             } else {
                 throw new Error(error);

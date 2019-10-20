@@ -54,14 +54,14 @@ class ArtistService {
         return artist;
     }
 
-    async getArtistTopTracks(id) {
+    async getArtistTopTracks({ id, market }) {
         let artist = null;
         try {
-            artist = await this.spotifyArtistLib.getArtistTopTracks(id);
+            artist = await this.spotifyArtistLib.getArtistTopTracks({ id, market });
         } catch (error) {
             const { status } = error;
             if (status === 401) {
-                const cb = () => this.spotifyArtistLib.getArtistTopTracks(id);
+                const cb = () => this.spotifyArtistLib.getArtistTopTracks({ id, market });
                 artist = await tokenExpiredHandler(cb);
             } else {
                 throw new Error(error);

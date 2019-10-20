@@ -5,9 +5,12 @@ const debug = require('debug')('app:server');
 const app = express();
 
 const { config } = require('./config');
+const albumsApi = require('./routes/albums');
+const artistsApi = require('./routes/artists');
 const authApi = require('./routes/auth');
 const categoriesApi = require('./routes/categories');
-const artistsApi = require('./routes/artists');
+const recommendationsAPi = require('./routes/recommendations');
+const searchApi = require('./routes/search');
 const tracksApi = require('./routes/tracks');
 
 const {
@@ -22,9 +25,12 @@ app.use(express.json());
 app.use(helmet());
 
 // Routes
+albumsApi(app);
+artistsApi(app);
 authApi(app);
 categoriesApi(app);
-artistsApi(app);
+recommendationsAPi(app);
+searchApi(app);
 tracksApi(app);
 
 // Catch 404

@@ -68,8 +68,9 @@ function artistsApi(app) {
         passport.authenticate('jwt', { session: false }),
         async (req, res, next) => {
             const { id } = req.params;
+            const { market } = req.query;
             try {
-                const data = await artistService.getArtistTopTracks(id);
+                const data = await artistService.getArtistTopTracks({ id, market });
                 res.status(200).json({
                     data,
                     message: 'artist top tracks',
@@ -81,7 +82,7 @@ function artistsApi(app) {
     );
 
     router.get(
-        '/artists/{id}/related-artists',
+        '/:id/related-artists',
         passport.authenticate('jwt', { session: false }),
         async (req, res, next) => {
             const { id } = req.params;
