@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development DEBUG=express:*,app:* nodemon --inspect index",
     "start": "NODE_ENV=production node index",
-    "test": "mocha --exit",
+    "test": "NODE_ENV=test mocha --exit",
     "cover": "nyc npm test",
     "report": "nyc report --reporter=html && xdg-open coverage/index.html",
     "lint": "eslint --fix .",
