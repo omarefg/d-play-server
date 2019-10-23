@@ -18,6 +18,10 @@ passport.use(
                 return cb(boom.unauthorized(), false);
             }
 
+            if (!user.confirmed) {
+                return cb(boom.forbidden('Email not verified', false));
+            }
+
             delete user.password;
 
             return cb(null, user);

@@ -12,6 +12,10 @@ const config = {
     spotifyClientId: process.env.SPOTIFY_CLIENT_ID,
     spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     spotifyApi: process.env.SPOTIFY_API,
+    apiUrl: process.env.API_URL,
+    emailUser: process.env.EMAIL_USER,
+    emailPass: process.env.EMAIL_PASS,
+    emailSecret: process.env.EMAIL_SECRET,
 };
 
 module.exports = { config };

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const { config } = require('../config');
 const UserService = require('../services/UserService');
 const validationHandler = require('../utils/middlewares/validation-handler');
+const { userExistHandler } = require('../utils/middlewares/user-exists-handler');
 const { userSchema } = require('../utils/schemas/');
 
 // Basic Strategy
@@ -54,6 +55,7 @@ function authApi(app) {
     router.post(
         '/sign-up',
         validationHandler(userSchema),
+        userExistHandler,
         async (req, res, next) => {
             const { body: user } = req;
             try {
@@ -67,6 +69,10 @@ function authApi(app) {
             }
         },
     );
+
+    // router.get('/confirmation/:token', async (req, res, next) => {
+
+    // });
 }
 
 module.exports = authApi;
