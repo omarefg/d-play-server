@@ -4,6 +4,10 @@
         "node": true,
         "es6": true
     },
+    "globals": {
+        "describe": true,
+        "it": true
+    },
     "extends": ["airbnb"],
     "parserOptions": {
         "ecmaVersion": 2018
