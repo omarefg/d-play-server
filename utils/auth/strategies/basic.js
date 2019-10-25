@@ -19,7 +19,7 @@ passport.use(
             }
 
             if (!user.confirmed) {
-                return cb(boom.forbidden('Email not verified', false));
+                return cb(boom.forbidden('Correo no verificado', false));
             }
 
             delete user.password;

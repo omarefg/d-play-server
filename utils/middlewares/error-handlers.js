@@ -5,7 +5,7 @@ const debug = require('debug')('app:error');
 const { config } = require('../../config');
 
 function withErrorStack(err, stack) {
-    if (config.dev) {
+    if (config.nodeEnv === 'development') {
         return { ...err, stack };
     }
     return err;
@@ -20,14 +20,15 @@ function wrapError(err, req, res, next) {
     if (!err.isBoom) {
         next(boom.badImplementation(err));
     }
-
     next(err);
 }
 
-function errorHandler(err, req, res) {
+function errorHandler(err, req, res, next) {
     const { output: { statusCode, payload } } = err;
-    res.status(statusCode);
-    res.json(withErrorStack(payload, err.stack));
+    res
+        .status(statusCode)
+        .json(withErrorStack(payload, err.stack));
+    next();
 }
 
 function notFoundHandler(req, res) {

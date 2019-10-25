@@ -1,6 +1,5 @@
 const express = require('express');
 const passport = require('passport');
-const boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
 const { config } = require('../config');
 const UserService = require('../services/UserService');
@@ -21,7 +20,8 @@ function authApi(app) {
         passport.authenticate('basic', (error, user) => {
             try {
                 if (error || !user) {
-                    next(boom.unauthorized());
+                    next(error);
+                    return;
                 }
 
                 req.login(user, { session: false }, async (cbError) => {
@@ -70,9 +70,15 @@ function authApi(app) {
         },
     );
 
-    // router.get('/confirmation/:token', async (req, res, next) => {
-
-    // });
+    router.get('/confirmation/:token', async (req, res, next) => {
+        try {
+            const { token } = req.params;
+            const url = await userService.confirmRegisteredUser(token);
+            res.redirect(url);
+        } catch (error) {
+            next(error);
+        }
+    });
 }
 
 module.exports = authApi;

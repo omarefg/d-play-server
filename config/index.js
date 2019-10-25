@@ -16,6 +16,7 @@ const config = {
     emailUser: process.env.EMAIL_USER,
     emailPass: process.env.EMAIL_PASS,
     emailSecret: process.env.EMAIL_SECRET,
+    clientUrl: process.env.CLIENT_URL,
 };
 
 module.exports = { config };
