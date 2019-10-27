@@ -1,10 +1,12 @@
 const express = require('express');
 const passport = require('passport');
 const CategorieService = require('../services/CategorieService');
+const { config: { nodeEnv } } = require('../config');
 
-// JWT Strategy
 require('../utils/auth/strategies/jwt');
 
+const isTest = nodeEnv === 'test';
+const authenticate = !isTest ? passport.authenticate('jwt', { session: false }) : (_req, _res, next) => next();
 
 function categoriesApi(app) {
     const router = express.Router();
@@ -14,7 +16,7 @@ function categoriesApi(app) {
 
     router.get(
         '/',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { limit, offset, country } = req.query;
             try {
@@ -31,7 +33,7 @@ function categoriesApi(app) {
 
     router.get(
         '/:id',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             try {
@@ -48,7 +50,7 @@ function categoriesApi(app) {
 
     router.get(
         '/:id/playlists',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             const { limit, offset, country } = req.query;

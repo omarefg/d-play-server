@@ -3,7 +3,6 @@ const passport = require('passport');
 const ArtistService = require('../services/ArtistService');
 const { config: { nodeEnv } } = require('../config');
 
-// JWT Strategy
 require('../utils/auth/strategies/jwt');
 
 const isTest = nodeEnv === 'test';

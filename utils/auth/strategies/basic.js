@@ -11,11 +11,11 @@ passport.use(
         try {
             const user = await userService.getUser({ email });
             if (!user) {
-                return cb(boom.unauthorized(), false);
+                return cb(boom.unauthorized('Tus credenciales no son correctos'), false);
             }
 
             if (!(await bcrypt.compare(password, user.password))) {
-                return cb(boom.unauthorized(), false);
+                return cb(boom.unauthorized('Tus credenciales no son correctos'), false);
             }
 
             if (!user.confirmed) {

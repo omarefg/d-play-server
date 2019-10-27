@@ -3,15 +3,13 @@ const passport = require('passport');
 const AlbumService = require('../services/AlbumService');
 const { config: { nodeEnv } } = require('../config');
 
-
-// JWT Strategy
 require('../utils/auth/strategies/jwt');
 
 const isTest = nodeEnv === 'test';
 const authenticate = !isTest ? passport.authenticate('jwt', { session: false }) : (_req, _res, next) => next();
 
 
-function artistsApi(app) {
+function albumsApi(app) {
     const router = express.Router();
     app.use('/api/albums', router);
 
@@ -70,4 +68,4 @@ function artistsApi(app) {
     );
 }
 
-module.exports = artistsApi;
+module.exports = albumsApi;

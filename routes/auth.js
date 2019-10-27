@@ -7,7 +7,6 @@ const validationHandler = require('../utils/middlewares/validation-handler');
 const { userExistHandler } = require('../utils/middlewares/user-exists-handler');
 const { userSchema } = require('../utils/schemas/');
 
-// Basic Strategy
 require('../utils/auth/strategies/basic');
 
 function authApi(app) {
@@ -29,12 +28,11 @@ function authApi(app) {
                         next(cbError);
                     }
 
-                    const { _id: id, name, email } = user;
+                    const { _id: id, ...userData } = user;
 
                     const payload = {
                         sub: id,
-                        name,
-                        email,
+                        ...userData,
                     };
 
                     const token = jwt.sign(payload, config.authJwtSecret, {
@@ -43,7 +41,7 @@ function authApi(app) {
 
                     return res.status(200).json({
                         token,
-                        user: { id, name, email },
+                        user: { id, ...userData },
                     });
                 });
             } catch (err) {

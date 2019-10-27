@@ -21,6 +21,15 @@ class UserService {
         }
     }
 
+    async getUserById(id) {
+        try {
+            const user = await this.mongoDB.get(this.collection, id);
+            return user;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
     async createUser({ user }) {
         const {
             name,

@@ -1,10 +1,12 @@
 const express = require('express');
 const passport = require('passport');
 const TrackService = require('../services/TrackService');
+const { config: { nodeEnv } } = require('../config');
 
-// JWT Strategy
 require('../utils/auth/strategies/jwt');
 
+const isTest = nodeEnv === 'test';
+const authenticate = !isTest ? passport.authenticate('jwt', { session: false }) : (_req, _res, next) => next();
 
 function tracksApi(app) {
     const router = express.Router();
@@ -14,7 +16,7 @@ function tracksApi(app) {
 
     router.get(
         '/',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { ids } = req.query;
             try {
@@ -31,7 +33,7 @@ function tracksApi(app) {
 
     router.get(
         '/:id',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             try {
@@ -48,7 +50,7 @@ function tracksApi(app) {
 
     router.get(
         '/audio-features',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { ids } = req.query;
             try {
@@ -65,7 +67,7 @@ function tracksApi(app) {
 
     router.get(
         '/audio-features/:id',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             try {
@@ -82,7 +84,7 @@ function tracksApi(app) {
 
     router.get(
         '/audio-analysis/:id',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             try {
