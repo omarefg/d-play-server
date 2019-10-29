@@ -1,12 +1,11 @@
 const express = require('express');
-const passport = require('passport');
 const TrackService = require('../services/TrackService');
 const { config: { nodeEnv } } = require('../config');
 
-require('../utils/auth/strategies/jwt');
+const { authorizedHandler } = require('../utils/middlewares/authorized-handler');
 
 const isTest = nodeEnv === 'test';
-const authenticate = !isTest ? passport.authenticate('jwt', { session: false }) : (_req, _res, next) => next();
+const authenticate = !isTest ? authorizedHandler : (_req, _res, next) => next();
 
 function tracksApi(app) {
     const router = express.Router();

@@ -94,7 +94,6 @@ class RecommendationService {
                     recommendations: await tokenExpiredHandler(cb2),
                 });
                 recommendations = await setRecomendations();
-                console.log(recommendations);
             } else {
                 throw new Error(error);
             }
@@ -112,7 +111,6 @@ class RecommendationService {
                 const cb = () => this.spotifyRecommendationLib
                     .getPlaylistTracks({ limit, offset, id });
                 playlist = await tokenExpiredHandler(cb);
-                console.log(playlist);
             } else {
                 throw new Error(error);
             }

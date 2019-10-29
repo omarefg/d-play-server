@@ -1,15 +1,14 @@
 const express = require('express');
-const passport = require('passport');
 const RecommendationService = require('../services/RecommendationService');
 const { config: { nodeEnv } } = require('../config');
 
 const cacheResponse = require('../utils/cache-response');
 const { FIVE_MINUTES_IN_SECONDS, SIXTY_MINUTES_IN_SECONDS } = require('../utils/time');
 
-require('../utils/auth/strategies/jwt');
+const { authorizedHandler } = require('../utils/middlewares/authorized-handler');
 
 const isTest = nodeEnv === 'test';
-const authenticate = !isTest ? passport.authenticate('jwt', { session: false }) : (_req, _res, next) => next();
+const authenticate = !isTest ? authorizedHandler : (_req, _res, next) => next();
 
 function recommendationsApi(app) {
     const router = express.Router();
