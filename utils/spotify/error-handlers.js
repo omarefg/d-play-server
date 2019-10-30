@@ -1,6 +1,6 @@
 const SpotifyAuthLib = require('../../lib/spotify/SpotifyAuthLib');
 
-const spotifyAuthLib = new SpotifyAuthLib();
+const spotifyAuthLib = SpotifyAuthLib.getInstance();
 
 
 async function tokenExpiredHandler(cb) {
@@ -9,6 +9,16 @@ async function tokenExpiredHandler(cb) {
     return response;
 }
 
+function errorHandler(error) {
+    if (error.response) {
+        return error.response;
+    } if (error.request) {
+        return error.request;
+    }
+    return error;
+}
+
 module.exports = {
     tokenExpiredHandler,
+    errorHandler,
 };

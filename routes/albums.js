@@ -1,12 +1,13 @@
 const express = require('express');
-const passport = require('passport');
 const AlbumService = require('../services/AlbumService');
+const { config: { nodeEnv } } = require('../config');
 
-// JWT Strategy
-require('../utils/auth/strategies/jwt');
+const { authorizedHandler } = require('../utils/middlewares/authorized-handler');
 
+const isTest = nodeEnv === 'test';
+const authenticate = !isTest ? authorizedHandler : (_req, _res, next) => next();
 
-function artistsApi(app) {
+function albumsApi(app) {
     const router = express.Router();
     app.use('/api/albums', router);
 
@@ -14,7 +15,7 @@ function artistsApi(app) {
 
     router.get(
         '/',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { ids } = req.query;
             try {
@@ -31,7 +32,7 @@ function artistsApi(app) {
 
     router.get(
         '/:id',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             try {
@@ -48,7 +49,7 @@ function artistsApi(app) {
 
     router.get(
         '/:id/tracks',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             const { limit, offset } = req.query;
@@ -65,4 +66,4 @@ function artistsApi(app) {
     );
 }
 
-module.exports = artistsApi;
+module.exports = albumsApi;

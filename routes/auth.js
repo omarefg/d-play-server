@@ -1,13 +1,12 @@
 const express = require('express');
 const passport = require('passport');
-const boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
 const { config } = require('../config');
 const UserService = require('../services/UserService');
 const validationHandler = require('../utils/middlewares/validation-handler');
+const { userExistHandler } = require('../utils/middlewares/user-exists-handler');
 const { userSchema } = require('../utils/schemas/');
 
-// Basic Strategy
 require('../utils/auth/strategies/basic');
 
 function authApi(app) {
@@ -20,7 +19,8 @@ function authApi(app) {
         passport.authenticate('basic', (error, user) => {
             try {
                 if (error || !user) {
-                    next(boom.unauthorized());
+                    next(error);
+                    return;
                 }
 
                 req.login(user, { session: false }, async (cbError) => {
@@ -28,12 +28,11 @@ function authApi(app) {
                         next(cbError);
                     }
 
-                    const { _id: id, name, email } = user;
+                    const { _id: id, ...userData } = user;
 
                     const payload = {
                         sub: id,
-                        name,
-                        email,
+                        ...userData,
                     };
 
                     const token = jwt.sign(payload, config.authJwtSecret, {
@@ -42,7 +41,7 @@ function authApi(app) {
 
                     return res.status(200).json({
                         token,
-                        user: { id, name, email },
+                        user: { id, ...userData },
                     });
                 });
             } catch (err) {
@@ -54,6 +53,7 @@ function authApi(app) {
     router.post(
         '/sign-up',
         validationHandler(userSchema),
+        userExistHandler,
         async (req, res, next) => {
             const { body: user } = req;
             try {
@@ -67,6 +67,16 @@ function authApi(app) {
             }
         },
     );
+
+    router.get('/confirmation/:token', async (req, res, next) => {
+        try {
+            const { token } = req.params;
+            const url = await userService.confirmRegisteredUser(token);
+            res.redirect(url);
+        } catch (error) {
+            next(error);
+        }
+    });
 }
 
 module.exports = authApi;

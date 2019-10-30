@@ -47,6 +47,7 @@ class AlbumService {
             if (status === 401) {
                 const cb = () => this.spotifyAlbumLib.getAlbumTracks({ limit, offset, id });
                 album = await tokenExpiredHandler(cb);
+                console.log(album);
             } else {
                 throw new Error(error);
             }

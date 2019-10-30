@@ -1,5 +1,5 @@
 const express = require('express');
-const SearchService = require('../services/SearchService');
+const UserService = require('../services/UserService');
 const { config: { nodeEnv } } = require('../config');
 
 const { authorizedHandler } = require('../utils/middlewares/authorized-handler');
@@ -7,26 +7,23 @@ const { authorizedHandler } = require('../utils/middlewares/authorized-handler')
 const isTest = nodeEnv === 'test';
 const authenticate = !isTest ? authorizedHandler : (_req, _res, next) => next();
 
-function searchApi(app) {
+function usersApi(app) {
     const router = express.Router();
-    app.use('/api/search', router);
+    app.use('/api/users', router);
 
-    const searchService = new SearchService();
+    const userService = new UserService();
 
     router.get(
-        '/',
+        '/:id',
         authenticate,
         async (req, res, next) => {
-            const {
-                q, type, limit, offset,
-            } = req.query;
+            const { id } = req.params;
             try {
-                const data = await searchService.search({
-                    q, type, limit, offset,
-                });
+                const data = await userService.getUserById(id);
+                delete data.password;
                 res.status(200).json({
                     data,
-                    message: 'albums',
+                    message: 'user',
                 });
             } catch (error) {
                 next(error);
@@ -35,4 +32,4 @@ function searchApi(app) {
     );
 }
 
-module.exports = searchApi;
+module.exports = usersApi;

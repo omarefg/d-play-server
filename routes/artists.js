@@ -1,9 +1,11 @@
 const express = require('express');
-const passport = require('passport');
 const ArtistService = require('../services/ArtistService');
+const { config: { nodeEnv } } = require('../config');
 
-// JWT Strategy
-require('../utils/auth/strategies/jwt');
+const { authorizedHandler } = require('../utils/middlewares/authorized-handler');
+
+const isTest = nodeEnv === 'test';
+const authenticate = !isTest ? authorizedHandler : (_req, _res, next) => next();
 
 
 function artistsApi(app) {
@@ -14,7 +16,7 @@ function artistsApi(app) {
 
     router.get(
         '/',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { ids } = req.query;
             try {
@@ -31,7 +33,7 @@ function artistsApi(app) {
 
     router.get(
         '/:id',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             try {
@@ -48,7 +50,7 @@ function artistsApi(app) {
 
     router.get(
         '/:id/albums',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             try {
@@ -65,7 +67,7 @@ function artistsApi(app) {
 
     router.get(
         '/:id/top-tracks',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             const { market } = req.query;
@@ -83,14 +85,14 @@ function artistsApi(app) {
 
     router.get(
         '/:id/related-artists',
-        passport.authenticate('jwt', { session: false }),
+        authenticate,
         async (req, res, next) => {
             const { id } = req.params;
             try {
                 const data = await artistService.getArtistRelatedArtists(id);
                 res.status(200).json({
                     data,
-                    message: 'artist top tracks',
+                    message: 'artist related artists',
                 });
             } catch (error) {
                 next(error);

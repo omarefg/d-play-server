@@ -12,6 +12,7 @@ const categoriesApi = require('./routes/categories');
 const recommendationsAPi = require('./routes/recommendations');
 const searchApi = require('./routes/search');
 const tracksApi = require('./routes/tracks');
+const usersApi = require('./routes/users');
 
 const {
     logErrors,
@@ -32,6 +33,7 @@ categoriesApi(app);
 recommendationsAPi(app);
 searchApi(app);
 tracksApi(app);
+usersApi(app);
 
 // Catch 404
 app.use(notFoundHandler);
