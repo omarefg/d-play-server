@@ -3,6 +3,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const { config } = require('../config');
 const UserService = require('../services/UserService');
+const AuthService = require('../services/AuthService');
 const validationHandler = require('../utils/middlewares/validation-handler');
 const { userExistHandler } = require('../utils/middlewares/user-exists-handler');
 const { userSchema } = require('../utils/schemas/');
@@ -30,17 +31,19 @@ function authApi(app) {
 
                     const { _id: id, ...userData } = user;
 
+                    const { authJwtSecret, authJwtRefreshTokenSecret } = config;
+
                     const payload = {
                         sub: id,
                         ...userData,
                     };
 
-                    const token = jwt.sign(payload, config.authJwtSecret, {
-                        expiresIn: '15m',
-                    });
+                    const token = jwt.sign(payload, authJwtSecret, { expiresIn: '15m' });
+                    const refreshToken = jwt.sign(payload, authJwtRefreshTokenSecret, { expiresIn: '7d' });
 
                     return res.status(200).json({
                         token,
+                        refreshToken,
                         user: { id, ...userData },
                     });
                 });
@@ -77,6 +80,19 @@ function authApi(app) {
             next(error);
         }
     });
+
+    router.get(
+        '/token',
+        async (req, res, next) => {
+            try {
+                const { authorization } = req.headers;
+                const token = await AuthService.refreshUserToken(authorization);
+                res.status(200).json({ token });
+            } catch (error) {
+                next(error);
+            }
+        },
+    );
 }
 
 module.exports = authApi;

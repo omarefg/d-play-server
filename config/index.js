@@ -9,6 +9,7 @@ const config = {
     dbHost: process.env.DB_HOST,
     dbName: process.env.DB_NAME,
     authJwtSecret: process.env.AUTH_JWT_SECRET,
+    authJwtRefreshTokenSecret: process.env.AUTH_JWT_REFRESH_TOKEN_SECRET,
     spotifyClientId: process.env.SPOTIFY_CLIENT_ID,
     spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     spotifyApi: process.env.SPOTIFY_API,
