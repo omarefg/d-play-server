@@ -23,8 +23,6 @@ passport.use(
             }
 
             delete user.password;
-            delete user.lists;
-            delete user.profilePic;
 
             return cb(null, user);
         } catch (error) {

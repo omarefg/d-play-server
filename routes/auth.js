@@ -38,6 +38,10 @@ function authApi(app) {
                         ...userData,
                     };
 
+
+                    delete payload.lists;
+                    delete payload.profilePic;
+
                     const token = jwt.sign(payload, authJwtSecret, { expiresIn: '15m' });
                     const refreshToken = jwt.sign(payload, authJwtRefreshTokenSecret, { expiresIn: '7d' });
 
