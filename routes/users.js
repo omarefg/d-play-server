@@ -30,6 +30,24 @@ function usersApi(app) {
             }
         },
     );
+
+    router.put(
+        '/:id',
+        authenticate,
+        async (req, res, next) => {
+            const { id } = req.params;
+            const { body: user } = req;
+            try {
+                const data = await userService.updateUser({ id, ...user });
+                res.status(200).json({
+                    data,
+                    message: 'user updated',
+                });
+            } catch (error) {
+                next(error);
+            }
+        },
+    );
 }
 
 module.exports = usersApi;

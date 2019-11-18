@@ -20,7 +20,7 @@ class EmailService {
             service: 'hotmail',
             auth: this.emailAuth,
         });
-        this.from = 'omarefg@hotmail.com';
+        this.from = emailUser;
         this.subject = 'Confirmación de correo para dplay';
     }
 
