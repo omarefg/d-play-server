@@ -1,10 +1,14 @@
 const express = require('express');
 const helmet = require('helmet');
 const debug = require('debug')('app:server');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 
 const { config } = require('./config');
+
+const { port, nodeEnv, apiUrlWithoutPort } = config;
 const albumsApi = require('./routes/albums');
 const artistsApi = require('./routes/artists');
 const authApi = require('./routes/auth');
@@ -20,6 +24,8 @@ const {
     wrapError,
     notFoundHandler,
 } = require('./utils/middlewares/error-handlers');
+
+const isDev = nodeEnv === 'development';
 
 // Body Parser
 app.use(express.json({ limit: '50mb' }));
@@ -43,6 +49,21 @@ app.use(logErrors);
 app.use(wrapError);
 app.use(errorHandler);
 
-app.listen(config.port, () => {
-    debug(`Listening http://localhost:${config.port}`);
-});
+if (isDev) {
+    app.listen(port, (error) => {
+        if (error) {
+            debug(error);
+        }
+        debug(`Listening ${apiUrlWithoutPort}:${port}`);
+    });
+} else {
+    https.createServer({
+        key: fs.readFileSync('/etc/letsenctrypt/live/dplay.cf/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsenctrypt/live/dplay.cf/fullchain.pem'),
+    }, app).listen(port, (error) => {
+        if (error) {
+            debug(error);
+        }
+        debug(`Listening ${apiUrlWithoutPort}:${port}`);
+    });
+}

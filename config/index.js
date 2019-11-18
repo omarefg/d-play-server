@@ -18,6 +18,8 @@ const config = {
     emailPass: process.env.EMAIL_PASS,
     emailSecret: process.env.EMAIL_SECRET,
     clientUrl: process.env.CLIENT_URL,
+    apiUrlWithoutPort: process.env.API_URL_WITHOUT_PORT,
+    clientUrlWithoutPort: process.env.CLIENT_URL_WITHOUT_PORT,
 };
 
 module.exports = { config };
