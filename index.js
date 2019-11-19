@@ -58,12 +58,12 @@ if (isDev) {
     });
 } else {
     https.createServer({
-        key: fs.readFileSync('/etc/letsencrypt/live/www.dplay.cf/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/www.dplay.cf/fullchain.pem'),
+        key: fs.readFileSync('/etc/letsencrypt/live/dplay.cf/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/dplay.cf/fullchain.pem'),
     }, app).listen(port, (error) => {
         if (error) {
-            debug(error);
+            console.log(error);
         }
-        debug(`Listening ${apiUrlWithoutPort}:${port}`);
+        console.log(`Listening ${apiUrlWithoutPort}:${port}`);
     });
 }
