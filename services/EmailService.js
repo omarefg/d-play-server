@@ -34,7 +34,7 @@ class EmailService {
                 <p>¡Felicidades! Eres parte de la mejor comunidad de música.</p>
                 <p>Nos encanta que seas parte de nuestro equipo.</p>
                 <p>Solo falta confirmar tu correo para que disfrutes de la mejor música.</p>
-                <p>Hazlo ingresando en el siguiente <a href="${url}">enlace</a> por favor.</p>
+                <p>Hazlo ingresando en <a href="${url}">éste enlace</a>.</p>
             `,
         };
     }
@@ -48,7 +48,7 @@ class EmailService {
                 <p>¡Hola! Somos Omar y Jorge, los creadores de dplay.</p>
                 <p>Ya casi actualizas tu correo.</p>
                 <p>Solo falta confirmar tu nuevo correo para que sigas disfrutando de la mejor música.</p>
-                <p>Hazlo ingresando en el siguiente <a href="${url}">enlace</a> por favor.</p>
+                <p>Hazlo ingresando en <a href="${url}">éste enlace</a>.</p>
             `,
         };
     }
