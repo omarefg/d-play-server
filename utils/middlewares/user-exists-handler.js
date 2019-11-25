@@ -4,7 +4,7 @@ const UserService = require('../../services/UserService');
 const userExistHandler = (req, res, next) => {
     const userService = new UserService();
     const { body: { email } } = req;
-    userService.getUser({ email })
+    userService.getUser({ email: email.toLowerCase() })
         .then((user) => {
             if (user) {
                 const error = new Error('Ya te encuentras registrado');
