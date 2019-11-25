@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const debug = require('debug')('app:email-service');
 const chalk = require('chalk');
 const boom = require('@hapi/boom');
+const {
+    confirmationEmail, logo, banner, changeEmail,
+} = require('../utils/marketing/email-templates');
 const { config } = require('../config');
 
 const {
@@ -22,20 +25,27 @@ class EmailService {
         });
         this.from = emailUser;
         this.subject = 'Confirmación de correo para dplay';
+        this.dplayLogo = 'dplay@logo.dd';
+        this.dplayBanner = 'dplay@banner.dd';
     }
 
     confirmationMailOptions(url) {
         return {
             from: this.from,
             subject: this.subject,
-            html: `
-                <h1>Confirmación de correo para dplay</h1>
-                <p>¡Hola! Somos Omar y Jorge, los creadores de dplay.</p>
-                <p>¡Felicidades! Eres parte de la mejor comunidad de música.</p>
-                <p>Nos encanta que seas parte de nuestro equipo.</p>
-                <p>Solo falta confirmar tu correo para que disfrutes de la mejor música.</p>
-                <p>Hazlo ingresando en <a href="${url}">éste enlace</a>.</p>
-            `,
+            html: confirmationEmail(url, this.dplayLogo, this.dplayBanner),
+            attachments: [
+                {
+                    filename: 'logo.png',
+                    path: logo,
+                    cid: this.dplayLogo,
+                },
+                {
+                    filename: 'banner.png',
+                    path: banner,
+                    cid: this.dplayBanner,
+                },
+            ],
         };
     }
 
@@ -43,13 +53,19 @@ class EmailService {
         return {
             from: this.from,
             subject: this.subject,
-            html: `
-                <h1>Confirmación de correo para dplay</h1>
-                <p>¡Hola! Somos Omar y Jorge, los creadores de dplay.</p>
-                <p>Ya casi actualizas tu correo.</p>
-                <p>Solo falta confirmar tu nuevo correo para que sigas disfrutando de la mejor música.</p>
-                <p>Hazlo ingresando en <a href="${url}">éste enlace</a>.</p>
-            `,
+            html: changeEmail(url, this.dplayLogo, this.dplayBanner),
+            attachments: [
+                {
+                    filename: 'logo.png',
+                    path: logo,
+                    cid: this.dplayLogo,
+                },
+                {
+                    filename: 'banner.png',
+                    path: banner,
+                    cid: this.dplayBanner,
+                },
+            ],
         };
     }
 
