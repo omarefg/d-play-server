@@ -9,7 +9,7 @@ passport.use(
     new BasicStrategy(async (email, password, cb) => {
         const userService = new UserService();
         try {
-            const user = await userService.getUser({ email });
+            const user = await userService.getUser({ email: email.toLowerCase() });
             if (!user) {
                 return cb(boom.unauthorized('Tus credenciales no son correctas'), false);
             }
