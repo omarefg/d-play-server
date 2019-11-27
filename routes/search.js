@@ -26,7 +26,24 @@ function searchApi(app) {
                 });
                 res.status(200).json({
                     data,
-                    message: 'albums',
+                    message: 'search',
+                });
+            } catch (error) {
+                next(error);
+            }
+        },
+    );
+
+    router.post(
+        '/audio-search',
+        authenticate,
+        async (req, res, next) => {
+            const { sample } = req.body;
+            try {
+                const data = await searchService.searchAudio(sample);
+                res.status(200).json({
+                    data,
+                    message: 'audio search',
                 });
             } catch (error) {
                 next(error);
