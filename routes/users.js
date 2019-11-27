@@ -30,7 +30,9 @@ function usersApi(app) {
             const { id } = req.params;
             try {
                 const data = await userService.getUserById(id);
-                delete data.password;
+                if (data) {
+                    delete data.password;
+                }
                 res.status(200).json({
                     data,
                     message: 'user',
