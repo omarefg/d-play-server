@@ -1,4 +1,5 @@
 const express = require('express');
+const boom = require('@hapi/boom');
 const SearchService = require('../services/SearchService');
 const { config: { nodeEnv } } = require('../config');
 
@@ -40,10 +41,15 @@ function searchApi(app) {
         async (req, res, next) => {
             const { sample } = req.body;
             try {
-                const data = await searchService.searchAudio(sample);
-                res.status(200).json({
-                    data,
-                    message: 'audio search',
+                searchService.searchAudio(sample, ({ data, status }) => {
+                    if (status === 200) {
+                        res.status(200).json({
+                            data,
+                            message: 'audio search',
+                        });
+                    } else {
+                        next(boom.internal('No hubo resultados'));
+                    }
                 });
             } catch (error) {
                 next(error);

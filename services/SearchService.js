@@ -40,9 +40,10 @@ class SearchService {
         return results;
     }
 
-    async searchAudio(blob) {
-        const sample = fs.readFileSync(blob);
-        console.log(sample);
+    async searchAudio(b64, cb) {
+        const base = b64.split(';base64,').pop();
+        fs.writeFileSync('test.wav', base, { encoding: 'base64' });
+        const sample = fs.readFileSync('test.wav');
         const currentData = new Date();
         const timestamp = currentData.getTime() / 1000;
         const stringToSign = buildStringToSign(
@@ -53,9 +54,7 @@ class SearchService {
             this.options.signature_version,
             timestamp,
         );
-
         const signature = sign(stringToSign, acrcloudAccessSecret);
-
         const formData = {
             sample,
             access_key: acrcloudAccessKey,
@@ -65,7 +64,6 @@ class SearchService {
             sample_bytes: sample.length,
             timestamp,
         };
-
         request.post({
             url: `${acrcloudHost}${this.options.endpoint}`,
             method: 'POST',
@@ -74,8 +72,18 @@ class SearchService {
             if (error) {
                 throw new Error(error);
             }
-            console.log(body);
-            return body;
+            fs.unlinkSync('test.wav');
+            const jsonData = JSON.parse(body);
+            console.log(jsonData);
+            if (jsonData.status.code === 0) {
+                const artist = jsonData.metadata.music[0].artists[0].name;
+                const album = jsonData.metadata.music[0].album.name;
+                const song = jsonData.metadata.music[0].title;
+                console.log({ artist, album, song });
+                cb({ data: { artist, album, song }, status: 200 });
+            } else {
+                cb({ data: null, status: 500 });
+            }
         });
     }
 }
