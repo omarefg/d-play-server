@@ -48,7 +48,7 @@ function searchApi(app) {
                             message: 'audio search',
                         });
                     } else {
-                        next(boom.internal('No hubo resultados'));
+                        next(boom.expectationFailed('No hubo resultados'));
                     }
                 });
             } catch (error) {
