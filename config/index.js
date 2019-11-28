@@ -20,6 +20,9 @@ const config = {
     clientUrl: process.env.CLIENT_URL,
     apiUrlWithoutPort: process.env.API_URL_WITHOUT_PORT,
     clientUrlWithoutPort: process.env.CLIENT_URL_WITHOUT_PORT,
+    acrcloudHost: process.env.ACRCLOUD_HOST,
+    acrcloudAccessKey: process.env.ACRCLOUD_ACCESS_KEY,
+    acrcloudAccessSecret: process.env.ACRCLOUD_ACCESS_SECRET,
 };
 
 module.exports = { config };

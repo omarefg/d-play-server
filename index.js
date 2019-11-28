@@ -1,10 +1,12 @@
 const express = require('express');
 const helmet = require('helmet');
+const multer = require('multer');
 const debug = require('debug')('app:server');
 const https = require('https');
 const fs = require('fs');
 
 const app = express();
+const upload = multer();
 
 const { config } = require('./config');
 
@@ -29,7 +31,10 @@ const isDev = nodeEnv === 'development';
 
 // Body Parser
 app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(helmet());
+app.use(upload.array());
+app.use(express.static(`${__dirname}/uploads`));
 
 // Routes
 albumsApi(app);
